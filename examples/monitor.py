@@ -19,7 +19,7 @@ from grow.moisture import Moisture
 from grow.pump import Pump
 
 
-FPS = 10
+FPS = 2
 
 BUTTONS = [5, 6, 16, 24]
 LABELS = ["A", "B", "X", "Y"]
@@ -574,9 +574,9 @@ class ChannelEditView(ChannelView, EditView):
             {
                 "title": "Pump Time",
                 "prop": "pump_time",
-                "inc": 0.05,
+                "inc": 0.2,
                 "min": 0.05,
-                "max": 2.0,
+                "max": 10.0,
                 "mode": "float",
                 "round": 2,
                 "format": lambda value: f"{value:0.2f}sec",
