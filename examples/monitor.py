@@ -574,9 +574,9 @@ class ChannelEditView(ChannelView, EditView):
             {
                 "title": "Pump Time",
                 "prop": "pump_time",
-                "inc": 0.2,
-                "min": 0.05,
-                "max": 10.0,
+                "inc": 0.5,
+                "min": 0.5,
+                "max": 60.0,
                 "mode": "float",
                 "round": 2,
                 "format": lambda value: f"{value:0.2f}sec",
