@@ -24,6 +24,9 @@ FPS = 2
 BUTTONS = [5, 6, 16, 24]
 LABELS = ["A", "B", "X", "Y"]
 
+# The GPI pin the water level sensor is connected to
+WATER_LEVEL = 26
+
 DISPLAY_WIDTH = 160
 DISPLAY_HEIGHT = 80
 
@@ -759,8 +762,10 @@ Dry point: {dry_point}
     def render(self, image, font):
         pass
 
-    def update(self):
+    def update(self, water_level_ok):
         if not self.enabled:
+            return
+        if not water_level_ok:
             return
         sat = self.sensor.saturation
         if sat < self.water_level:
@@ -1051,6 +1056,8 @@ def main():
     GPIO.setwarnings(False)
     GPIO.setup(BUTTONS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    GPIO.setup(WATER_LEVEL, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
     for pin in BUTTONS:
         GPIO.add_event_detect(pin, GPIO.FALLING, handle_button, bouncetime=200)
 
@@ -1121,16 +1128,25 @@ Low Light Value {:.2f}
         ]
     )
 
+    was_water_level_ok = GPIO.input(WATER_LEVEL)
+
     while True:
+        water_level_ok = GPIO.input(WATER_LEVEL)
+        if water_level_ok != was_water_level_ok:
+            print("Water level changed. now " + str(water_level_ok))
+        was_water_level_ok = water_level_ok
+
         for channel in channels:
             config.set_channel(channel.channel, channel)
-            channel.update()
+            channel.update(water_level_ok)
             if channel.alarm:
                 alarm.trigger()
 
         light_level_low = light.get_lux() < config.get_general().get("light_level_low")
 
         alarm.update(light_level_low)
+
+        
 
         viewcontroller.update()
 
