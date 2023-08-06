@@ -762,10 +762,10 @@ Dry point: {dry_point}
     def render(self, image, font):
         pass
 
-    def update(self, water_level_ok):
+    def update(self, water_level_low):
         if not self.enabled:
             return
-        if not water_level_ok:
+        if water_level_low:
             return
         sat = self.sensor.saturation
         if sat < self.water_level:
@@ -1128,17 +1128,17 @@ Low Light Value {:.2f}
         ]
     )
 
-    was_water_level_ok = GPIO.input(WATER_LEVEL)
-
+    was_water_level_low = GPIO.input(WATER_LEVEL)
+    print("Initial water level = " + str(was_water_level_low))
     while True:
-        water_level_ok = GPIO.input(WATER_LEVEL)
-        if water_level_ok != was_water_level_ok:
-            print("Water level changed. now " + str(water_level_ok))
-        was_water_level_ok = water_level_ok
+        water_level_low = GPIO.input(WATER_LEVEL)
+        if water_level_low != was_water_level_low:
+            print("Water level changed. now " + str(water_level_low))
+        was_water_level_low = water_level_low
 
         for channel in channels:
             config.set_channel(channel.channel, channel)
-            channel.update(water_level_ok)
+            channel.update(water_level_low)
             if channel.alarm:
                 alarm.trigger()
 
