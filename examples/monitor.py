@@ -1024,6 +1024,8 @@ def main():
         if label == "Y":
             viewcontroller.button_y()
 
+    logging.basicConfig(level=logging.INFO)
+
 
     # Set up the ST7735 SPI Display
     display = ST7735.ST7735(
@@ -1129,11 +1131,11 @@ Low Light Value {:.2f}
     )
 
     was_water_level_low = GPIO.input(WATER_LEVEL)
-    print("Initial water level = " + str(was_water_level_low))
+    logging.info("Initial water level = {}".format(was_water_level_low))
     while True:
         water_level_low = GPIO.input(WATER_LEVEL)
         if water_level_low != was_water_level_low:
-            print("Water level changed. now " + str(water_level_low))
+            logging.info("Water level changed. now {}".format(water_level_low))
         was_water_level_low = water_level_low
 
         for channel in channels:
